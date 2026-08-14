@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server"
+import { revalidatePath } from "next/cache";
 
 const serializeTransaction = (obj) =>{
     const serialized = {...obj};
@@ -9,9 +10,13 @@ const serializeTransaction = (obj) =>{
     if(obj.balance){
         serialized.balance = obj.balance.toNumber();
     }
+
+    if(obj.amount){
+        serialized.amount = obj.amount.toNumber();
+    }
 }
 
-export async function createAccount(data){
+export async function createAccount(data){ //this is a server action, that ACTUALLY creates the account. Press Create Account, lekin create toh backend pe hoga, toh frontend se backend ke liye ek server action chahiye hota hai aur ye vo hi hai
     try{
         const {userId} = await auth();
        
@@ -22,7 +27,7 @@ export async function createAccount(data){
             },
         });
 
-         if(!userId) {
+         if(!user) {
             throw new Error("Unauthorized");
         }
         //convert balance to float before saving
@@ -32,8 +37,8 @@ export async function createAccount(data){
         }
 
         //check if its user's first account
-        const existingAccounts = await db.user.findMany({
-            where: {userId:user.id},
+        const existingAccounts = await db.account.findMany({
+            where: {userId: user.id},
         });
 
         const shouldBeDefault = existingAccounts.len==0?true:data.isDefault;
@@ -47,7 +52,7 @@ export async function createAccount(data){
             })
         }
 
-        const account = await db.accout.create({
+        const account = await db.account.create({
             data:{
                 ...data,
                 balance:balanceFloat,
@@ -56,12 +61,43 @@ export async function createAccount(data){
             },
         });
 
-        const serializedAccout =  serializeTransaction(account);
+        const serializedAccount =  serializeTransaction(account);
 
         revalidatePath("/dashboard");
-        return {sucess:true, data:serializedAccout};
+        return {sucess:true, data:serializedAccount};
 
     } catch(error){
         throw new Error(error.message);
     }
+}
+
+export async function getUserAccounts(){
+    const {userId} = await auth();
+       
+
+        const user = await db.user.findUnique({
+            where:{
+                clerkUserId:userId
+            },
+        });
+
+         if(!user) {
+            throw new Error("Unauthorized");
+        }
+
+        const accounts = db.account.findMany({
+            where:{userId:user.id},
+            orderBy: {createdAt: "desc"},
+            include:{
+                _count:{
+                    select:{
+                        transactions:true,
+                    }
+                }
+            }
+        });
+
+        const serializedAccount =  serializeTransaction(account);
+        return serializedAccount;
+
 }
