@@ -2,8 +2,14 @@ import CreateAccountDrawer from '@/components/ui/create-account-drawer'
 import React from 'react'
 import { Card, CardContent,  } from '../../../components/ui/card'
 import { Plus } from 'lucide-react'
+import { getUserAccounts } from '@/actions/dashboard'
+import AccountCard from './_components/account-card'
 
-const DashboardPage = () => {
+
+//this is a server action so we wont be needing any hook. Hooks work only on client side
+const DashboardPage = async () => { 
+const accounts = await getUserAccounts()
+
   return (
     <div className='px-5'>
         
@@ -18,6 +24,10 @@ const DashboardPage = () => {
                     </CardContent>
                 </Card>
             </CreateAccountDrawer>
+
+            {accounts.length>0 && accounts?.map((account)=>{
+                return <AccountCard key={account.id} account={account} />
+            })}
         </div>
     </div>
   )

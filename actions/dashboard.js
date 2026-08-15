@@ -4,7 +4,7 @@ import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache";
 
-const serializeTransaction = (obj) =>{
+const serializeTransaction = (obj) =>{ //we are receiving objects in Prisma datatype, so need to convert that into dafe, javascript data types and obejcts thats why we are serializing it.
     const serialized = {...obj};
 //serializing the balance in case its a float
     if(obj.balance){
@@ -14,10 +14,13 @@ const serializeTransaction = (obj) =>{
     if(obj.amount){
         serialized.amount = obj.amount.toNumber();
     }
+
+    return serialized;
 }
 
 export async function createAccount(data){ //this is a server action, that ACTUALLY creates the account. Press Create Account, lekin create toh backend pe hoga, toh frontend se backend ke liye ek server action chahiye hota hai aur ye vo hi hai
     try{
+        //checking agar user hai ya nahi
         const {userId} = await auth();
        
 
@@ -85,7 +88,7 @@ export async function getUserAccounts(){
             throw new Error("Unauthorized");
         }
 
-        const accounts = db.account.findMany({
+        const accounts = await db.account.findMany({
             where:{userId:user.id},
             orderBy: {createdAt: "desc"},
             include:{
@@ -97,7 +100,7 @@ export async function getUserAccounts(){
             }
         });
 
-        const serializedAccount =  serializeTransaction(account);
+        const serializedAccount =  accounts.map(serializeTransaction);
         return serializedAccount;
 
 }
