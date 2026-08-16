@@ -110,9 +110,11 @@ export async function bulkDeleteTransactions(transactionIds){
         userId:user.id,
       },
     });
-      const  accountBalanceChanges = transactions.reduce((curr,transaction)=> {
+
+    //update account balance after deletion
+      const  accountBalanceChanges = transactions.reduce((acc,transaction)=> {
         const change = 
-        transaction.type==="EXPENSE"?-transaction.amount:transaction.amount;
+        transaction.type==="EXPENSE"?transaction.amount:-transaction.amount;
 
         acc[transaction.accountId] = (acc[transaction.accountId]||0) + change;
         return acc; 

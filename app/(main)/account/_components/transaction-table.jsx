@@ -49,9 +49,11 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Router } from "next/router";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useFetch from "@/hook/use-fetch";
 import { bulkDeleteTransactions } from "@/actions/accounts";
+import { toast } from "sonner";
+import { BarLoader } from "react-spinners";
 
 const RECURRING_INTERVALS = {
   DAILY: "Daily",
@@ -71,7 +73,7 @@ function TransactionTable({ transactions }) {
     data:deleted,
   } = useFetch(bulkDeleteTransactions);
 
-  const handleBulkDelete = async () = {
+  const handleBulkDelete = async () => {
     if(!window.confirm(`Are you sure you want to delete ${selectedIds.length} transactions?`)
     )
   {
@@ -80,6 +82,17 @@ function TransactionTable({ transactions }) {
 
     deleteFn(selectedIds);
   };
+
+  useEffect(()=>{
+    if (deleted && !deleteLoading) {
+  if (deleted.success) {
+    toast.success("Transactions deleted successfully");
+  } else {
+    toast.error(deleted.error || "Failed to delete transactions");
+  }
+}
+
+  }, [deleted, deleteLoading])
 
   const router = useRouter();
   const [selectedIds, setSelectedIds] = useState([]);
@@ -183,6 +196,8 @@ function TransactionTable({ transactions }) {
 
   return (
     <div className="space-y-4">
+      {deleteLoading && (<BarLoader className="mt-4 " width={"100%"} color="#9333ea"/>)}
+      
       {/* //Search and Filter */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1 ">
