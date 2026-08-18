@@ -8,6 +8,7 @@ function Progress({
   className,
   children,
   value,
+  extraStyles,
   ...props
 }) {
   return (
@@ -18,7 +19,7 @@ function Progress({
       {...props}>
       {children}
       <ProgressTrack>
-        <ProgressIndicator />
+        <ProgressIndicator extraStyles={extraStyles}/>
       </ProgressTrack>
     </ProgressPrimitive.Root>
   );
@@ -40,13 +41,13 @@ function ProgressTrack({
 }
 
 function ProgressIndicator({
-  className,
-  ...props
+  className, extraStyles,
+  ...props 
 }) {
   return (
     <ProgressPrimitive.Indicator
       data-slot="progress-indicator"
-      className={cn("h-full bg-primary transition-all", className)}
+      className={cn(`h-full bg-primary transition-all`, extraStyles,  className)}
       {...props} />
   );
 }

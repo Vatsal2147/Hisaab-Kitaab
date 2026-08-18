@@ -1,7 +1,7 @@
-"user server";
+"use server";
 
 import { db } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { gte, lte } from "zod";
 
@@ -20,7 +20,7 @@ export async function getCurrentBudget(accountId) {
       throw new Error("User not found");
     }
 
-    const budget = db.budget.findFirst({
+    const budget = await db.budget.findFirst({
       where: {
         userId: user.id,
       },
@@ -39,7 +39,7 @@ export async function getCurrentBudget(accountId) {
       0,
     );
 
-    const expenses = await db.transaction.aggregrate({
+    const expenses = await db.transaction.aggregate({
       where: {
         userId: user.id,
         type: "EXPENSE",
@@ -58,10 +58,10 @@ export async function getCurrentBudget(accountId) {
       budget: budget ? { ...budget, amount: budget.amount.toNumber() } : null,
       currentExpenses: expenses._sum.amount
         ? expenses._sum.amount.toNumber()
-        : 0, //serializing kyunki humne client ko bhejna hai ye hi cheez, but it need sto be converted into data that is safely transeferrable or int the right format
+        : 0, //serializing kyunki humne client ko bhejna hai ye hi cheez, but it needs to be converted into data that is safely transeferrable or int the right format
     };
   } catch (error) {
-    console.error("Error fetching budget");
+    console.error("Error fetching budget", error);
     throw error;
   }
 }

@@ -5,6 +5,7 @@ import { Plus } from 'lucide-react'
 import { getUserAccounts } from '@/actions/dashboard'
 import AccountCard from './_components/account-card'
 import { getCurrentBudget } from '@/actions/budget'
+import BudgetProgress from './_components/budget-progress'
 
 
 //this is a server action so we wont be needing any hook. Hooks work only on client side
