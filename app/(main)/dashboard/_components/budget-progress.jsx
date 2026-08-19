@@ -119,6 +119,7 @@ function BudgetProgress({ initialBudget, currentExpenses }) {
               
               
               /> 
+              <p className='text-xs text-muted-foreground text-right'>{percentUsed.toFixed(1)}% used</p>
               {/* budget amount is in initialBudget.amount and expenses in currentExpenses which we are getting from budget.js */}
             </div>
           )}
