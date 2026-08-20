@@ -20,10 +20,13 @@ import useFetch from "@/hook/use-fetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 function AddTransactionForm({ accounts, categories }) {
+    const router = useRouter();
   const {
     register,
     setValue,
@@ -53,11 +56,29 @@ function AddTransactionForm({ accounts, categories }) {
   const isRecurring = watch("isRecurring");
   const date = watch("date");
 
+  const onSubmit = async (data) => {
+    const formData = {
+        ...data, //spread operator
+        amount: parseFloat(data.amount), //overwrites the old amount
+    };
+
+    transactionFn(formData); 
+  }
+
+  useEffect(()=>{
+    if(transactionResult?.success && !transactionLoading){
+        toast.success("Transaction created successfully");
+        reset();
+        router.push(`/account/${transactionResult.data.accountId}`);
+    }
+  },[transactionResult, transactionLoading])
+
+
   const filteredCategories = categories.filter(
     (category) => category.type === type,
   );
   return (
-    <form className="space-y-6">
+    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       {/* AI receipt scanner */}
 
       <div className="space-y-2">
@@ -224,7 +245,7 @@ function AddTransactionForm({ accounts, categories }) {
             onValueChange={(value) => setValue("recurringInterval", value)}
             defaultValue={getValues("recurringInterval")}
           >
-            <SelectTrigger>
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select interval" />
             </SelectTrigger>
             <SelectContent>
@@ -241,6 +262,21 @@ function AddTransactionForm({ accounts, categories }) {
           )}
         </div>
       )}
+
+       {/* Actions */}
+      <div className="flex gap-4">
+        <Button
+          type="button"
+          variant="outline"
+          className="flex-1"
+          onClick={() => router.back()}
+        >
+          Cancel
+        </Button>
+        <Button type="submit" className="flex-1" disabled={transactionLoading}>
+         Create Transaction
+        </Button>
+      </div>
     
     </form>
   );

@@ -11,14 +11,14 @@ const serializeAmount = (obj) => ({
 })
 
 
-export async function createTransaction(data) {
+export async function createTransaction(data) { //yaha pe error tha usko dhundo JALDI
     try{
         const {userId} = await auth();
         if(!userId) throw new Error("Unauthorized");
 
         const user = await db.user.findUnique({
             where:{
-                clerkUserId: user.id
+                clerkUserId: userId
             },
         });
 
@@ -26,7 +26,7 @@ export async function createTransaction(data) {
             throw new Error("User not found");
         }
 
-        const account = await db.accout.findUnique({
+        const account = await db.account.findUnique({
             where:{
                 id:data.accountId,
                 userId:user.id,
