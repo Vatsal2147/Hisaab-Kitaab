@@ -3,8 +3,17 @@ import { defaultCategories } from '@/data/categories';
 import React from 'react'
 import AddTransactionForm from '../_components/transaction-form';
 
-async function AddTransactionPage() {
+async function AddTransactionPage({searchParams}) {
   const accounts = await getUserAccounts();
+
+  const params = await searchParams;
+
+
+
+    const editId = (await searchParams)?.edit;
+
+    console.log(editId);
+
   return (
     <div className='max-w-3xl mx-auto px-5'>
       <h1 className='text-5xl gradient-title mb-8 '>
