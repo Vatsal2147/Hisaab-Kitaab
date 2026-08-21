@@ -1,11 +1,12 @@
 import CreateAccountDrawer from '@/components/ui/create-account-drawer'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Card, CardContent,  } from '../../../components/ui/card'
 import { Plus } from 'lucide-react'
-import { getUserAccounts } from '@/actions/dashboard'
+import { getDashboardData, getUserAccounts } from '@/actions/dashboard'
 import AccountCard from './_components/account-card'
 import { getCurrentBudget } from '@/actions/budget'
 import BudgetProgress from './_components/budget-progress'
+import DashboardOverview from './_components/dashboard-overview'
 
 
 //this is a server action so we wont be needing any hook. Hooks work only on client side
@@ -19,6 +20,9 @@ if(defaultAccount) {
     budgetData = await getCurrentBudget(defaultAccount.id);
 }
 
+const transactions = await getDashboardData();
+
+
   return (
     <div className='space-y-8'>
         {/* budget progress yaha dikhayi jaayegi */}
@@ -28,6 +32,11 @@ if(defaultAccount) {
                 currentExpenses={budgetData?.currentExpenses || 0}
                 />
             )}
+
+            <Suspense fallback={"Loading Overview..."}>
+            <DashboardOverview accounts={accounts} transactions={transactions||[]}/>    
+
+            </Suspense>
 
         <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
             <CreateAccountDrawer>
