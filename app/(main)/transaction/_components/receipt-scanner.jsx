@@ -45,7 +45,7 @@ function ReceiptScanner({ onScanComplete }) {
           if (file) handleReceiptScan(file);
         }}
       />
-      <Button type="button" variant="outline" className="w-full cursor-pointer h-10 bg-gradient-to-br from-amber-300 via-pink-500 to-purple-500 animate-gradient hover:opacity-90 transition-opacity text-white hover:text-white"
+      <Button type="button" variant="outline" className="w-full cursor-pointer h-10 bg-linear-to-br from-amber-300 via-pink-500 to-purple-500 animate-gradient hover:opacity-90 transition-opacity text-white hover:text-white"
       onClick={()=>fileInputRef.current?.click()} //same as clicking on the input ref because we have hidden it and want user to click it tp upload files
       disabled={scanReceiptLoading}
       >
