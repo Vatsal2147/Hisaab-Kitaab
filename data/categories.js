@@ -29,6 +29,13 @@ export const defaultCategories = [
     icon: "Building",
   },
   {
+    id: "initial-balance",
+    name: "Initial Balance",
+    type: "INCOME",
+    color: "#64748b",
+    icon: "Wallet",
+  },
+  {
     id: "rental",
     name: "Rental",
     type: "INCOME",

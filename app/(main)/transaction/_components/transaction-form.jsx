@@ -226,7 +226,7 @@ function AddTransactionForm({
           </Select>
 
           {errors.type && (
-            <p className="text-sm text-red-500">{errors.type.message}</p>
+            <p className="text-sm text-red-500">{errors.category.message}</p>
           )}
         </div>
       </div>
@@ -261,7 +261,7 @@ function AddTransactionForm({
         </Popover>
 
         {errors.date && (
-          <p className="text-sm text-red-500">{errors.type.message}</p>
+          <p className="text-sm text-red-500">{errors.date.message}</p>
         )}
       </div>
 

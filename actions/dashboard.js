@@ -68,6 +68,7 @@ export async function createAccount(data) {
     await db.transaction.create({ //jaise hi account create karenge, the INITIAL INCOME  must be added as a transaction of "Initial Balance"
       data: {
         type: "INCOME",
+        category:"initial-balance",
         amount: balanceFloat,
         description: "Initial Balance",
         date: new Date(),
