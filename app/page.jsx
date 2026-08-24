@@ -93,7 +93,7 @@ export default function Home() {
               <p className="text-blue-100 mb-8 max-w-2xl mx-auto ">Join thousands of users who area already managing their finances smart with Hisaab Kitaab</p>
               <Link href="/dashboard">
               <Button size="lg" className="bg-white cursor-pointer  px-6 py-6 text-blue-600 hover:bg-blue-50 animate-bounce">
-                Start Your Free Trial</Button>
+                Start Your Journey Today</Button>
               
               </Link>
             </div>

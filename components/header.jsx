@@ -16,7 +16,7 @@ const Header = async () => {
           <Image
             src={"/logo.png"}
             alt="logo"
-            height={60}
+            height={200}
             width={200}
             className="h-12 w-auto object-contain"
           />
@@ -28,7 +28,7 @@ const Header = async () => {
             <Link href="/dashboard">
              <Button variant="outline">
               <LayoutDashboard size={18}/>
-              <span className="hidden md:inline">Dashboard</span> 
+              <span className="hidden md:inline cursor-pointer">Dashboard</span> 
               {/* if width is smaller than some size, then hide the TEXT */}
              </Button>
             </Link>
@@ -36,7 +36,7 @@ const Header = async () => {
              <Link href="/transaction/create" className="text-gray-600 hover:text-blue-600 flex items-center gap-2">
              <Button className="flex items-center gap-2">
               <PenBox size={18}/>
-              <span className="hidden md:inline">Add Transaction</span> 
+              <span className="hidden md:inline cursor-pointer">Add Transaction</span> 
               {/* if width is smaller than some size, then hide the TEXT */}
              </Button>
             </Link>

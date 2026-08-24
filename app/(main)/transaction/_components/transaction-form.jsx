@@ -114,7 +114,7 @@ function AddTransactionForm({ accounts, categories, editMode=false, initialData 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       {/* AI receipt scanner */}
-     { editMode?<></>: <ReceiptScanner onScanComplete={handleScanComplete}/>}
+     { !editMode && <ReceiptScanner onScanComplete={handleScanComplete}/>}
 
       <div className="space-y-2">
         <label>Type</label>
@@ -168,7 +168,7 @@ function AddTransactionForm({ accounts, categories, editMode=false, initialData 
                 {accounts.map((account) => (
                   <SelectItem key={account.id} value={account.id}>
                     {" "}
-                    {account.name} (${parseFloat(account.balance).toFixed(2)})
+                    {account.name} (₹{parseFloat(account.balance).toFixed(2)})
                   </SelectItem>
                 ))}
                 <CreateAccountDrawer>

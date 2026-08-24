@@ -82,7 +82,7 @@ const DashboardOverview = ({ accounts, transactions }) => {
       {/* Recent Transactions Card */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <CardTitle className="text-base font-normal">
+          <CardTitle className="text-base font-bold">
             Recent Transactions
           </CardTitle>
           <Select
@@ -104,7 +104,7 @@ const DashboardOverview = ({ accounts, transactions }) => {
         <CardContent>
           <div className="space-y-4">
             {recentTransactions.length === 0 ? (
-              <p className="text-center text-muted-foreground py-4">
+              <p className="text-center text-muted-foreground font-bold py-4 ">
                 No recent transactions
               </p>
             ) : (
@@ -135,7 +135,7 @@ const DashboardOverview = ({ accounts, transactions }) => {
                       ) : (
                         <ArrowUpRight className="mr-1 h-4 w-4" />
                       )}
-                      ${transaction.amount.toFixed(2)}
+                      ₹{transaction.amount.toFixed(2)}
                     </div>
                   </div>
                 </div>
@@ -148,13 +148,13 @@ const DashboardOverview = ({ accounts, transactions }) => {
       {/* Expense Breakdown Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base font-normal">
+          <CardTitle className="text-base font-bold">
             Monthly Expense Breakdown
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0 pb-5">
           {pieChartData.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4">
+            <p className="text-center text-muted-foreground font-bold py-4">
               No expenses this month
             </p>
           ) : (
@@ -168,7 +168,7 @@ const DashboardOverview = ({ accounts, transactions }) => {
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
-                    label={({ name, value }) => `${name.charAt(0).toUpperCase() + name.slice(1)}: $${value.toFixed(2)}`}
+                    label={({ name, value }) => `${name.charAt(0).toUpperCase() + name.slice(1)}: ₹${value.toFixed(2)}`}
                   >
                     {pieChartData.map((entry, index) => (
                       <Cell
@@ -179,7 +179,7 @@ const DashboardOverview = ({ accounts, transactions }) => {
                   </Pie>
                   <Tooltip
                     formatter={(value, name) => [
-    `$${value.toFixed(2)}`,
+    `₹${value.toFixed(2)}`,
     name.charAt(0).toUpperCase() + name.slice(1),
   ]}
                     contentStyle={{
