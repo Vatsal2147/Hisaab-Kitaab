@@ -5,7 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import CreateAccountDrawer from "@/components/ui/create-account-drawer";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -26,10 +32,15 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import ReceiptScanner from "./receipt-scanner";
 
-function AddTransactionForm({ accounts, categories, editMode=false, initialData = null }) {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const editId = searchParams.get("edit");
+function AddTransactionForm({
+  accounts,
+  categories,
+  editMode = false,
+  initialData = null,
+}) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
   const {
     register,
     setValue,
@@ -40,9 +51,11 @@ function AddTransactionForm({ accounts, categories, editMode=false, initialData 
     reset,
   } = useForm({
     resolver: zodResolver(transactionSchema),
-    defaultValues: //agar pehle se data hai toh usko lo nahi toh naya data banao.
-    editMode && initialData?{
-         type: initialData.type,
+    //agar pehle se data hai toh usko lo nahi toh naya data banao.
+    defaultValues:
+      editMode && initialData
+        ? {
+            type: initialData.type,
             amount: initialData.amount.toString(),
             description: initialData.description,
             accountId: initialData.accountId,
@@ -52,15 +65,15 @@ function AddTransactionForm({ accounts, categories, editMode=false, initialData 
             ...(initialData.recurringInterval && {
               recurringInterval: initialData.recurringInterval,
             }),
-    }:
-    {
-      type: "EXPENSE",
-      amount: "",
-      description: "",
-      accountId: accounts.find((ac) => ac.isDefault)?.id,
-      date: new Date(),
-      isRecurring: false,
-    },
+          }
+        : {
+            type: "EXPENSE",
+            amount: "",
+            description: "",
+            accountId: accounts.find((ac) => ac.isDefault)?.id,
+            date: new Date(),
+            isRecurring: false,
+          },
   });
 
   const {
@@ -74,28 +87,31 @@ function AddTransactionForm({ accounts, categories, editMode=false, initialData 
 
   const onSubmit = async (data) => {
     const formData = {
-        ...data, //spread operator
-        amount: parseFloat(data.amount), //overwrites the old amount
+      ...data, //spread operator
+      amount: parseFloat(data.amount), //overwrites the old amount
     };
-    if(editMode) {
-        transactionFn(editId, formData);
-    } else{
-        transactionFn(formData);
+    if (editMode) {
+      transactionFn(editId, formData);
+    } else {
+      transactionFn(formData);
     }
- 
-  }
+  };
 
-  useEffect(()=>{
-    if(transactionResult?.success && !transactionLoading){
-        toast.success(editMode?"Transaction updated successfully":"Transaction created successfully");
-        reset();
-        router.push(`/account/${transactionResult.data.accountId}`);
+  useEffect(() => {
+    if (transactionResult?.success && !transactionLoading) {
+      toast.success(
+        editMode
+          ? "Transaction updated successfully"
+          : "Transaction created successfully",
+      );
+      reset();
+      router.push(`/account/${transactionResult.data.accountId}`);
     }
-  },[transactionResult, transactionLoading, editMode])
+  }, [transactionResult, transactionLoading, editMode]);
 
   //for AI receipt scanning
   const handleScanComplete = (scannedData) => {
-         if (scannedData) {
+    if (scannedData) {
       setValue("amount", scannedData.amount.toString());
       setValue("date", new Date(scannedData.date));
       if (scannedData.description) {
@@ -106,7 +122,7 @@ function AddTransactionForm({ accounts, categories, editMode=false, initialData 
       }
       toast.success("Receipt scanned successfully");
     }
-  }
+  };
 
   const filteredCategories = categories.filter(
     (category) => category.type === type,
@@ -114,7 +130,7 @@ function AddTransactionForm({ accounts, categories, editMode=false, initialData 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       {/* AI receipt scanner */}
-     { !editMode && <ReceiptScanner onScanComplete={handleScanComplete}/>}
+      {!editMode && <ReceiptScanner onScanComplete={handleScanComplete} />}
 
       <div className="space-y-2">
         <label>Type</label>
@@ -150,7 +166,7 @@ function AddTransactionForm({ accounts, categories, editMode=false, initialData 
           />
 
           {errors.amount && (
-            <p className="text-sm text-red-500">{errors.type.message}</p>
+            <p className="text-sm text-red-500">{errors.amount.message}</p>
           )}
         </div>
 
@@ -163,25 +179,23 @@ function AddTransactionForm({ accounts, categories, editMode=false, initialData 
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Account" />
             </SelectTrigger>
+
             <SelectContent>
               <SelectGroup>
                 {accounts.map((account) => (
                   <SelectItem key={account.id} value={account.id}>
-                    {" "}
                     {account.name} (₹{parseFloat(account.balance).toFixed(2)})
                   </SelectItem>
                 ))}
-                <CreateAccountDrawer>
-                  <Button
-                    variant="ghost "
-                    className="w-86 bg-black text-white cursor-pointer select-none items-center text-sm outline-none"
-                  >
-                    Create Account
-                  </Button>
-                </CreateAccountDrawer>
               </SelectGroup>
             </SelectContent>
           </Select>
+
+          <CreateAccountDrawer>
+            <Button type="button" variant="outline" className="cursor-pointer w-full mt-2 bg-black text-white hover:bg-gray-600 hover:text-white">
+              Create Account
+            </Button>
+          </CreateAccountDrawer>
 
           {errors.amount && (
             <p className="text-sm text-red-500">{errors.amount.message}</p>
@@ -217,42 +231,41 @@ function AddTransactionForm({ accounts, categories, editMode=false, initialData 
         </div>
       </div>
 
-   
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Date</label>
-         <Popover>
-  <PopoverTrigger
-    render={
-      <Button
-        variant="outline"
-        className="w-full pl-3 text-left font-normal"
-      />
-    }
-  >
-    {date ? format(date, "PPP") : <span>Pick a Date</span>}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Date</label>
+        <Popover>
+          <PopoverTrigger
+            render={
+              <Button
+                variant="outline"
+                className="w-full pl-3 text-left font-normal"
+              />
+            }
+          >
+            {date ? format(date, "PPP") : <span>Pick a Date</span>}
 
-    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-  </PopoverTrigger>
+            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+          </PopoverTrigger>
 
-  <PopoverContent className="w-auto p-0" align="start">
-    <Calendar
-      mode="single"
-      selected={date}
-      onSelect={(date) => setValue("date", date)}
-      disabled={(date) =>
-        date > new Date() || date < new Date("1900-01-01")
-      }
-      initialFocus
-    />
-  </PopoverContent>
-</Popover>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={(date) => setValue("date", date)}
+              disabled={(date) =>
+                date > new Date() || date < new Date("1900-01-01")
+              }
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
 
-          {errors.date&& (
-            <p className="text-sm text-red-500">{errors.type.message}</p>
-          )}
-        </div>
+        {errors.date && (
+          <p className="text-sm text-red-500">{errors.type.message}</p>
+        )}
+      </div>
 
-        <div className="space-y-2">
+      <div className="space-y-2">
         <label className="text-sm font-medium">Description</label>
         <Input placeholder="Enter description" {...register("description")} />
         {errors.description && (
@@ -298,7 +311,7 @@ function AddTransactionForm({ accounts, categories, editMode=false, initialData 
         </div>
       )}
 
-       {/* Actions */}
+      {/* Actions */}
       <div className="flex gap-4">
         <Button
           type="button"
@@ -308,16 +321,20 @@ function AddTransactionForm({ accounts, categories, editMode=false, initialData 
         >
           Cancel
         </Button>
-        <Button type="submit" className="flex-1" disabled={transactionLoading}>
-            {transactionLoading?(<>
-            {" "}
-            <Loader2 className = "mr-2 h-4 w-4 animate-spin"/>
-            {editMode?"Updating...":"Creating..."}
-            </>):(editMode?`Update Transaction`:`Create Transaction`)}
-       
+        <Button type="submit" className="flex-1 cursor-pointer" disabled={transactionLoading}>
+          {transactionLoading ? (
+            <>
+              {" "}
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {editMode ? "Updating..." : "Creating..."}
+            </>
+          ) : editMode ? (
+            `Update Transaction`
+          ) : (
+            `Create Transaction`
+          )}
         </Button>
       </div>
-    
     </form>
   );
 }

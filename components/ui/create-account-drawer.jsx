@@ -64,7 +64,7 @@ useEffect(() => {
   }
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>{children}</DrawerTrigger>
+      <DrawerTrigger render={children}></DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Create New Account</DrawerTitle>
@@ -90,8 +90,9 @@ useEffect(() => {
               </label>
               <Select
                 onValueChange={(value) => setValue("type", value)}
-                defaultValue={watch("type")}
-              >
+                defaultValue="CURRENT"
+              > 
+              {/* yaha pe default value pe watch ki zarurat nahi thi , default value needs to be constant not dynamically changing */}
                 <SelectTrigger id="type">
                   <SelectValue placeholder="Select Type"></SelectValue>
                 </SelectTrigger>
@@ -138,9 +139,9 @@ useEffect(() => {
               )}
             </div>
             <div className="flex gap-4 pt-4">
-                <DrawerClose asChild>
-                    <Button type="button" variant="outline" className="flex-1">Cancel</Button>
-                </DrawerClose>
+                <DrawerClose render={ <Button type="button" variant="outline" className="flex-1">Cancel</Button>}/>
+                   
+                
                 <Button type="submit" className="flex-1" disabled={createAccountLoading}>
                     {createAccountLoading? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Creating....</>:"Create Account"}</Button>
             </div>
