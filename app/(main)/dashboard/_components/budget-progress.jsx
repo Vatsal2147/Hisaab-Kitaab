@@ -46,11 +46,12 @@ function BudgetProgress({ initialBudget, currentExpenses }) {
   };
 
   useEffect(() => {
-    if (updatedBudget?.success) {
-      setIsEditing(false);
-      toast.success("Budget updated successfully");
-    }
-  }, [updatedBudget]);
+  if (updatedBudget?.success) {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsEditing(false);
+    toast.success("Budget updated successfully");
+  }
+}, [updatedBudget]);
 
   useEffect(() => {
     if(error) {
